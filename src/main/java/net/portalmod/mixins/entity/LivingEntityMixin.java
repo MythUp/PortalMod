@@ -4,6 +4,8 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -46,6 +48,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Deque;
+import java.util.UUID;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity implements Flingable, IDragCancelable, IGelAffected {
@@ -386,10 +389,23 @@ public abstract class LivingEntityMixin extends Entity implements Flingable, IDr
 //        this.lerpSteps = 0;
 //        info.cancel();
 //    }
-    
+
+    private static final UUID FOV_MODIFIER_FLING = UUID.fromString("46ea8b5a-6e03-44d0-b9b3-ed95341b0c51");
+    private static final AttributeModifier flingSpeedBoost = new AttributeModifier(FOV_MODIFIER_FLING,
+            "Fling speed boost", .1F, AttributeModifier.Operation.ADDITION);
+
     @Override
-    public void setFlinging(boolean launched) {
+    public void setFlinging(LivingEntity entity, boolean launched) {
         pmLaunched = launched;
+
+        ModifiableAttributeInstance speedAttribute = entity.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (speedAttribute == null) return;
+
+        if (launched) {
+            if (!speedAttribute.hasModifier(flingSpeedBoost)) speedAttribute.addTransientModifier(flingSpeedBoost);
+        } else {
+            if (speedAttribute.hasModifier(flingSpeedBoost)) speedAttribute.removeModifier(flingSpeedBoost);
+        }
     }
 
     @Override

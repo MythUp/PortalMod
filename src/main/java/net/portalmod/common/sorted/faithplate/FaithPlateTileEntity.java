@@ -124,7 +124,7 @@ public class FaithPlateTileEntity extends TileEntity implements ITickableTileEnt
         ));
 
         entity.setShiftKeyDown(false);
-        ((Flingable)entity).setFlinging(true);
+        ((Flingable)entity).setFlinging((LivingEntity) entity, true);
         this.cooldown = COOLDOWN_DURATION;
 
         if(!this.level.isClientSide) {

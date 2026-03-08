@@ -146,7 +146,7 @@ public class ClientEvents {
 
         if(event.phase == Phase.START)
             if(player.abilities.flying)
-                ((Flingable)player).setFlinging(false);
+                ((Flingable)player).setFlinging(player, false);
 
         if(event.phase == Phase.END && player.isLocalPlayer()) {
             if(player.inventory.getSelected().getItem() != ItemInit.WRENCH.get()) {
