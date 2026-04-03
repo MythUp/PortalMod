@@ -7,23 +7,23 @@ import net.portalmod.core.packet.AbstractPacket;
 
 import java.util.function.Supplier;
 
-public class CPropulsionGelBoostTickPacket implements AbstractPacket<CPropulsionGelBoostTickPacket> {
-    private int ticks;
+public class CRepulsionGelBouncePacket implements AbstractPacket<CRepulsionGelBouncePacket> {
+    private boolean bounced;
 
-    public CPropulsionGelBoostTickPacket() {}
+    public CRepulsionGelBouncePacket() {}
 
-    public CPropulsionGelBoostTickPacket(int ticks) {
-        this.ticks = ticks;
+    public CRepulsionGelBouncePacket(boolean bounced) {
+        this.bounced = bounced;
     }
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeInt(this.ticks);
+        buffer.writeBoolean(this.bounced);
     }
 
     @Override
-    public CPropulsionGelBoostTickPacket decode(PacketBuffer buffer) {
-        return new CPropulsionGelBoostTickPacket(buffer.readInt());
+    public CRepulsionGelBouncePacket decode(PacketBuffer buffer) {
+        return new CRepulsionGelBouncePacket(buffer.readBoolean());
     }
 
     @Override
@@ -33,7 +33,7 @@ public class CPropulsionGelBoostTickPacket implements AbstractPacket<CPropulsion
             if(player == null)
                 return;
 
-            ((IGelAffected)player).setPropulsionTicks(this.ticks);
+            ((IGelAffected)player).setBounced(this.bounced);
         });
 
         context.get().setPacketHandled(true);
